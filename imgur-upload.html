@@ -1,0 +1,153 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-ajax/core-ajax.html">
+
+<!--
+Element that will upload any image that Imgur can handle.
+
+##### Example
+
+    <imgur-upload clientID="123456"></imgur-upload>
+
+@element imgur-upload
+@blurb Element that will upload any image that Imgur can handle.
+@status beta
+@homepage http://ianbibby.github.io/imgur-upload
+-->
+<polymer-element name="imgur-upload" attributes="clientID file auto url">
+  <template>
+    <core-ajax
+      id="coreAjax"
+      url="{{url}}"
+      headers="{{headers}}"
+      response="{{response}}"
+      body="{{file}}"
+      method="POST"
+      contentType="multipart/form-data"
+      handleAs="json"
+      on-core-response="{{handleResponse}}"
+      on-core-error="{{handleError}}"></core-ajax>
+  </template>
+  <script>
+    Polymer({
+
+      /**
+       * `clientID` is the Client ID provided to you by Imgur.
+       *
+       * @property clientID
+       * @type string
+       * @default null
+       */
+      clientID: null,
+
+      /**
+       * `file` is the selected File object to be uploaded and must be
+       * a supported image type.
+       *
+       * @property file
+       * @type File
+       * @default null
+       */
+      file: null,
+
+      /**
+       * When `auto` is true, the image will be uploaded immediately.
+       *
+       * @property auto
+       * @type boolean
+       * @default null
+       */
+      auto: false,
+
+      /**
+       * Override the `url` to use.
+       *
+       * @property url
+       * @type string
+       * @default https://api.imgur.com/3/upload.json
+       */
+      url: "https://api.imgur.com/3/upload.json",
+
+      headers: {},
+      response: {},
+
+      /**
+       * The `fileChanged` method watches for changes to the `file` property.
+       *
+       * @method fileChanged
+       */
+      fileChanged: function() {
+        if (this.auto) {
+          this.upload();
+        }
+      },
+
+      /**
+       * The `upload` method will upload the chosen image to Imgur.
+       *
+       * @method upload
+       */
+      upload: function () {
+        if (!this.file || !(this.file.type.indexOf("image/") == 0)) {
+          this.fire('imgur-upload-invalid-file-type', { fileType: this.file.type });
+          return null;
+        }
+
+        var fd = new FormData();
+        fd.append("image", this.file);
+
+        this.body = fd;
+        if (this.clientID) {
+          this.headers = { "Authorization": "Client-ID " + this.clientID };
+        }
+
+        this.$.coreAjax.go();
+        this.fire('imgur-upload-started', { file: this.file.name });
+      },
+
+      handleResponse: function(e) {
+        this.fire('imgur-upload-success', this.response.data);
+      },
+
+      handleError: function(e) {
+        var response = e.detail.response;
+        this.error = JSON.parse(response.substring(response.indexOf('{'), response.length));
+        this.fire('imgur-upload-failure', this.error);
+      }
+
+      /**
+       * The `imgur-upload-started` event is fired whenever the
+       * image upload has started.
+       *
+       * @event imgur-upload-started
+       * @param {Object} detail
+       *   @param {string} detail.file File name of the uploading file.
+       */
+
+      /**
+       * The `imgur-upload-success` event is fired whenever the
+       * image is successfully uploaded to Imgur.
+       *
+       * @event imgur-upload-success
+       * @param {Object} detail
+       *     @param {string} detail.deletehash Imgur deletehash
+       *    @param {integer} height Image height
+       *     @param {integer} width Image width
+       *     @param {integer} size Image size
+       *     @param {string} id Imgur id for the image
+       *     @param {string} link Imgur URL for the image
+       *     @param {string} type Image type
+       */
+
+      /**
+       * The `imgur-upload-failure` event is fired whenever the
+       * image failed to be uploaded to Imgur.
+       *
+       * @event imgur-upload-failure
+       * @param {Object} detail
+       *   @param {string} detail.data Hash containing error message and more
+       *   @param {string} detail.status HTTP status code
+       *   @param {string} detail.success Will always be false
+       */
+    });
+  </script>
+</polymer-element>

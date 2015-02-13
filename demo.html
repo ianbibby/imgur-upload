@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>imgur-upload Demo</title>
+    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="imgur-upload.html">
+  </head>
+  <body unresolved>
+    <p>An `imgur-upload` looks like this:</p>
+
+    <template id="demo" is="auto-binding">
+      <imgur-upload clientID="{{clientID}}" auto></imgur-upload>
+
+      <pre>
+        &lt;imgur-upload clientID="{{clientID}}" auto&gt;&lt;/imgur-upload&gt;
+      </pre>
+
+      <p>
+        <label>Imgur Client ID:</label>
+        <input type="text" value="{{clientID}}"></input>
+      </p>
+      <input id="fileInput" type="file"></input>
+      <img src=""/>
+    </template>
+
+    <script>
+      (function() {
+
+        var demo = document.querySelector("#demo");
+
+        demo.addEventListener('template-bound', function() {
+
+          this.$.fileInput.addEventListener('change', function() {
+            var el = document.querySelector("imgur-upload");
+            el.file = this.files[0];
+          });
+
+        });
+
+        document.addEventListener('imgur-upload-success', function(e) {
+          console.log(e);
+          document.querySelector("img").src = e.detail.link;
+        });
+        document.addEventListener('imgur-upload-failure', function(e) {
+          console.log(e);
+          alert(e.detail.data.error);
+        });
+      })();
+    </script>
+  </body>
+</html>

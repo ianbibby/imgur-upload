@@ -1,0 +1,27 @@
+{
+  "name": "imgur-upload",
+  "keywords": [
+    "seed",
+    "polymer",
+    "web-components"
+  ],
+  "main": "imgur-upload.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1",
+    "core-ajax": "Polymer/core-ajax#~0.5.4"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.0"
+  },
+  "homepage": "https://github.com/ianbibby/imgur-upload",
+  "_release": "cd57a29f45",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "cd57a29f45aec523502765461bfc88c99a573809"
+  },
+  "_source": "git://github.com/ianbibby/imgur-upload.git",
+  "_target": "master",
+  "_originalSource": "ianbibby/imgur-upload",
+  "_direct": true
+}

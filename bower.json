@@ -1,0 +1,7 @@
+{
+  "name": "imgur-upload#gh-pages",
+  "private": true,
+  "dependencies": {
+    "imgur-upload": "ianbibby/imgur-upload#master"
+  }
+}

@@ -13,13 +13,15 @@ Element that will upload any image that Imgur can handle.
 @status beta
 @homepage http://ianbibby.github.io/imgur-upload
 -->
-<polymer-element name="imgur-upload" attributes="clientID file auto url">
+<polymer-element name="imgur-upload" attributes="clientID file auto url progress loading">
   <template>
     <core-ajax
       id="coreAjax"
       url="{{url}}"
       headers="{{headers}}"
       response="{{response}}"
+      progress="{{progress}}"
+      loading="{{loading}}"
       body="{{file}}"
       method="POST"
       contentType="multipart/form-data"
@@ -29,6 +31,24 @@ Element that will upload any image that Imgur can handle.
   </template>
   <script>
     Polymer({
+
+      /**
+       * Whether the current file is currently loading.
+       *
+       * @attribute loading
+       * @type boolean
+       * @default false
+       */
+      loading: false,
+
+      /**
+       * The progress of the current file thats loading.
+       *
+       * @attribute progress
+       * @type {loaded: number, total: number, lengthComputable: boolean}
+       * @default {}
+       */
+      progress: null,
 
       /**
        * `clientID` is the Client ID provided to you by Imgur.

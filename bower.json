@@ -1,6 +1,6 @@
 {
   "name": "imgur-upload",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
     "seed",
     "polymer",
@@ -8,7 +8,7 @@
   ],
   "main": "imgur-upload.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.1",
+    "polymer": "Polymer/polymer#^0.5.4",
     "core-ajax": "Polymer/core-ajax#~0.5.4"
   },
   "devDependencies": {

@@ -11,7 +11,7 @@
     <p>An `imgur-upload` looks like this:</p>
 
     <template id="demo" is="auto-binding">
-      <imgur-upload clientID="{{clientID}}" auto></imgur-upload>
+      <imgur-upload clientID="{{clientID}}" progress="{{progress}}" loading="{{loading}}" auto></imgur-upload>
 
       <pre>
         &lt;imgur-upload clientID="{{clientID}}" auto&gt;&lt;/imgur-upload&gt;
@@ -22,6 +22,7 @@
         <input type="text" value="{{clientID}}"></input>
       </p>
       <input id="fileInput" type="file"></input>
+      <progress min="0" value="{{progress.loaded}}"></progress>
       <img src=""/>
     </template>
 

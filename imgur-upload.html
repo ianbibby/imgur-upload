@@ -1,99 +1,105 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <!--
 Element that will upload any image that Imgur can handle.
 
-##### Example
+Example:
 
-    <imgur-upload clientID="123456"></imgur-upload>
+    <imgur-upload clientId="123456"></imgur-upload>
 
 @element imgur-upload
 @blurb Element that will upload any image that Imgur can handle.
 @status beta
 @homepage http://ianbibby.github.io/imgur-upload
+@demo
 -->
-<polymer-element name="imgur-upload" attributes="clientID file auto url progress loading">
+<dom-module id="imgur-upload">
+
+  <style>
+    :host {
+      display: block;
+      color: red;
+    }
+  </style>
+
   <template>
-    <core-ajax
-      id="coreAjax"
-      url="{{url}}"
+    <iron-ajax
+      id="ironAjax"
+      url="https://api.imgur.com/3/upload.json"
       headers="{{headers}}"
-      response="{{response}}"
       progress="{{progress}}"
-      loading="{{loading}}"
+      last-response="{{response}}"
       body="{{file}}"
       method="POST"
       contentType="multipart/form-data"
-      handleAs="json"
-      on-core-response="{{handleResponse}}"
-      on-core-error="{{handleError}}"></core-ajax>
+      handle-as="json"
+      on-response="handleResponse"
+      on-core-error="{{handleError}}">
+    </iron-ajax>
   </template>
   <script>
     Polymer({
+      is: 'imgur-upload',
 
-      /**
-       * Whether the current file is currently loading.
-       *
-       * @attribute loading
-       * @type boolean
-       * @default false
-       */
-      loading: false,
+      properties: {
+        /**
+         * Whether the current file is currently loading.
+         */
+        loading: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
 
-      /**
-       * The progress of the current file thats loading.
-       *
-       * @attribute progress
-       * @type {loaded: number, total: number, lengthComputable: boolean}
-       * @default {}
-       */
-      progress: null,
+        /**
+         * The progress of the current file thats loading.
+         *
+         * {loaded: number, total: number, lengthComputable: boolean}
+         */
+        progress: {
+          type: Object,
+          reflectToAttribute: true
+        },
 
-      /**
-       * `clientID` is the Client ID provided to you by Imgur.
-       *
-       * @property clientID
-       * @type string
-       * @default null
-       */
-      clientID: null,
+        /**
+         * `clientId` is the Client ID provided to you by Imgur.
+         */
+        clientId: {
+          type: String,
+          value: null,
+          reflectToAttribute: true
+        },
 
-      /**
-       * `file` is the selected File object to be uploaded and must be
-       * a supported image type.
-       *
-       * @property file
-       * @type File
-       * @default null
-       */
-      file: null,
+        /**
+         * `file` is the selected File object to be uploaded and must be
+         * a supported image type.
+         */
+        file: {
+          type: Object,
+          notify: true,
+          observer: 'fileChanged',
+          value: function () {
+            return {};
+          }
+        },
 
-      /**
-       * When `auto` is true, the image will be uploaded immediately.
-       *
-       * @property auto
-       * @type boolean
-       * @default null
-       */
-      auto: false,
+        /**
+         * When `auto` is true, the image will be uploaded immediately.
+         */
+        auto: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
 
-      /**
-       * Override the `url` to use.
-       *
-       * @property url
-       * @type string
-       * @default https://api.imgur.com/3/upload.json
-       */
-      url: "https://api.imgur.com/3/upload.json",
+        headers: {},
+        response: {},
 
-      headers: {},
-      response: {},
+      },
 
       /**
        * The `fileChanged` method watches for changes to the `file` property.
-       *
-       * @method fileChanged
        */
       fileChanged: function() {
         if (this.auto) {
@@ -116,11 +122,10 @@ Element that will upload any image that Imgur can handle.
         fd.append("image", this.file);
 
         this.body = fd;
-        if (this.clientID) {
-          this.headers = { "Authorization": "Client-ID " + this.clientID };
+        if (this.clientId) {
+          this.headers = { "Authorization": "Client-ID " + this.clientId };
         }
-
-        this.$.coreAjax.go();
+        this.$.ironAjax.generateRequest();
         this.fire('imgur-upload-started', { file: this.file.name });
       },
 
@@ -170,4 +175,4 @@ Element that will upload any image that Imgur can handle.
        */
     });
   </script>
-</polymer-element>
+</dom-module>
